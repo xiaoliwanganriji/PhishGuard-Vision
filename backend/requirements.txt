@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+httpx
+python-whois
+python-Levenshtein
+python-dotenv
+pydantic
+Pillow
+beautifulsoup4

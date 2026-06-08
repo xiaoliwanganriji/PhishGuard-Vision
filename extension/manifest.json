@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "PhishGuard-Vision",
+  "version": "1.0",
+  "description": "AI驱动的实时钓鱼网站检测插件，提供可解释的判定理由",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "http://127.0.0.1:8000/*",
+    "http://localhost:8000/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
