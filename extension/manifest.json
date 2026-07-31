@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "PhishGuard-Vision",
+  "version": "1.1.0",
+  "description": "本地优先的钓鱼网站检测插件；命中显著风险时可一键申请 AI 深度审查（数据最小化，不主动外发）。",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "PhishGuard-Vision",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": [
+        "lib/brands.js",
+        "lib/urlUtils.js",
+        "lib/levenshtein.js",
+        "lib/tlds.js",
+        "lib/ruleEngine.js",
+        "contentScript.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8000/*",
+    "http://localhost:8000/*"
+  ]
+}

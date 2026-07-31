@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 320px; padding: 14px 16px; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: #1f2328; margin: 0;
+    }
+    h3 { margin: 0 0 8px; font-size: 16px; display: flex; align-items: center; gap: 6px; }
+    h3 .logo {
+      display: inline-block; width: 18px; height: 18px; border-radius: 4px;
+      background: linear-gradient(135deg, #0070ba, #00c6ff);
+    }
+    #result { font-size: 14px; }
+    .status { font-size: 16px; font-weight: 600; margin: 8px 0 4px; }
+    .status.safe { color: #22863a; }
+    .status.phishing { color: #cb2431; }
+    .status.checking { color: #b08800; }
+    .status.error { color: #cb2431; }
+    .tag {
+      display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 10px;
+      vertical-align: middle; margin-left: 4px;
+    }
+    .tag-ai { background: #ddf4ff; color: #0969da; }
+    .tag-offline { background: #f6f8fa; color: #57606a; }
+    .tag-pending { background: #fff8c5; color: #735c0f; }
+    .reason { font-size: 13px; color: #57606a; margin: 8px 0; line-height: 1.5; }
+    .reason ul { margin: 4px 0 0; padding-left: 20px; }
+    .reason li { margin: 2px 0; }
+    .actions { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+    button {
+      padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer;
+      font-size: 13px; font-weight: 500;
+    }
+    button.primary { background: #0070ba; color: #fff; }
+    button.primary:hover { background: #005a96; }
+    button.secondary { background: #f6f8fa; color: #1f2328; border: 1px solid #d0d7de; }
+    button.secondary:hover { background: #eaeef2; }
+    button.official-btn { background: #fff; color: #0070ba; border: 2px solid #0070ba; font-weight: 600; }
+    .footer { font-size: 11px; color: #8c959f; margin-top: 10px; text-align: center; }
+    .skeleton {
+      background: #f6f8fa; border-radius: 4px; height: 12px; margin: 4px 0;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+  </style>
+</head>
+<body>
+  <h3><span class="logo"></span> PhishGuard-Vision</h3>
+  <div id="result">
+    <div class="status checking">正在加载本地检测结果…</div>
+    <div class="skeleton" style="width: 80%;"></div>
+    <div class="skeleton" style="width: 60%;"></div>
+  </div>
+  <div class="footer">本地引擎检测 · 准确率 &lt; 50% 自动触发 AI 分析</div>
+  <script src="lib/brands.js"></script>
+  <script src="lib/urlUtils.js"></script>
+  <script src="lib/levenshtein.js"></script>
+  <script src="lib/tlds.js"></script>
+  <script src="lib/ruleEngine.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

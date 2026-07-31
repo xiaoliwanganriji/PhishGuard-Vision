@@ -1,0 +1,43 @@
+# 环境变量（包含密钥，禁止提交）
+.env
+.env.local
+.env.*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+env/
+*.egg-info/
+dist-info/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 临时日志和文件
+*.log
+startup_log.txt
+evaluate/_run_engine.js
+evaluate/dataset.json
+evaluate/phishtank_online-valid*
+backend/.backend_pid
+backend/test_start.bat
+backend/启动诊断.bat
+
+# 打包产物
+dist/
+*.zip
+
+# 临时测试和诊断脚本
+test_start.bat
+启动诊断.bat
+
+# IDE 配置
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -1,0 +1,39 @@
+{
+  "_comment": "PhishGuard-Vision 评估数据集模板。label: 1=钓鱼, 0=正常。",
+  "_tip": "可以接入 PhishTank 公开数据集（https://phishtank.org/developer_info.php）扩展。",
+  "samples": [
+    {
+      "label": 1,
+      "url": "https://example-phish-site.tk/login",
+      "pageText": "verify your account, urgent, click here to login",
+      "links": ["http://192.168.1.1/track"],
+      "forms": [
+        {
+          "action": "http://malicious.example.com/steal",
+          "method": "post",
+          "inputs": [
+            {"type": "text", "name": "email", "placeholder": "邮箱"},
+            {"type": "password", "name": "password", "placeholder": "密码"}
+          ]
+        }
+      ],
+      "html": ""
+    },
+    {
+      "label": 0,
+      "url": "https://www.example.com",
+      "pageText": "Welcome to our homepage. We are a legitimate company.",
+      "links": ["https://www.example.com/about", "https://www.example.com/contact"],
+      "forms": [
+        {
+          "action": "/search",
+          "method": "get",
+          "inputs": [
+            {"type": "text", "name": "q", "placeholder": "Search..."}
+          ]
+        }
+      ],
+      "html": ""
+    }
+  ]
+}
