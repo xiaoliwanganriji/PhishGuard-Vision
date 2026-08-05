@@ -1,6 +1,10 @@
 # PhishGuard-Vision Chrome Web Store 打包脚本
 # 用法：在项目根目录运行 python scripts/build_package.py
+<<<<<<< HEAD
 # 生成：dist/phishguard-vision-v1.1.0.zip
+=======
+# 生成：dist/phishguard-vision-v{manifest_version}.zip
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
 import os
 import zipfile

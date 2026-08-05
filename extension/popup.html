@@ -37,23 +37,88 @@
     button.primary:hover { background: #005a96; }
     button.secondary { background: #f6f8fa; color: #1f2328; border: 1px solid #d0d7de; }
     button.secondary:hover { background: #eaeef2; }
+<<<<<<< HEAD
     button.official-btn { background: #fff; color: #0070ba; border: 2px solid #0070ba; font-weight: 600; }
     .footer { font-size: 11px; color: #8c959f; margin-top: 10px; text-align: center; }
+=======
+    button.ai-btn { background: #1f6feb; color: #fff; font-weight: 600; }
+    button.ai-btn:hover { background: #1a5fcd; }
+    button.official-btn { background: #fff; color: #0070ba; border: 2px solid #0070ba; font-weight: 600; }
+    .footer { font-size: 11px; color: #8c959f; margin-top: 10px; text-align: center; }
+    .phish-alert {
+      background: #ffeaea; border: 2px solid #cb2431; border-radius: 8px;
+      padding: 10px; margin: 8px 0; text-align: center;
+    }
+    .phish-alert .alert-title { color: #cb2431; font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     .skeleton {
       background: #f6f8fa; border-radius: 4px; height: 12px; margin: 4px 0;
       animation: pulse 1.5s ease-in-out infinite;
     }
     @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+<<<<<<< HEAD
   </style>
 </head>
 <body>
   <h3><span class="logo"></span> PhishGuard-Vision</h3>
+=======
+    /* 设置面板 */
+    .settings-panel {
+      background: #f6f8fa; border-radius: 8px; padding: 10px; margin: 8px 0;
+    }
+    .settings-panel label {
+      display: block; font-size: 12px; font-weight: 600; color: #1f2328;
+      margin-bottom: 4px;
+    }
+    .settings-panel input {
+      width: 100%; box-sizing: border-box; padding: 6px 8px;
+      border: 1px solid #d0d7de; border-radius: 6px; font-size: 13px;
+      font-family: inherit;
+    }
+    .settings-panel input:focus { outline: none; border-color: #0969da; }
+    .settings-hint { font-size: 11px; color: #57606a; margin-top: 4px; line-height: 1.4; }
+    .settings-row { display: flex; gap: 6px; margin-top: 6px; }
+    .settings-row button { flex: 1; padding: 6px 8px; font-size: 12px; }
+    .settings-icon {
+      cursor: pointer; font-size: 16px; opacity: 0.5; transition: opacity 0.2s;
+      margin-left: 4px;
+    }
+    .settings-icon:hover { opacity: 1; }
+    .token-saved { font-size: 12px; color: #22863a; margin-top: 4px; }
+    .token-error { font-size: 12px; color: #cb2431; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <h3>
+    <span class="logo"></span> PhishGuard-Vision
+    <span id="settingsIcon" class="settings-icon" title="AI 后端配置">&#9881;</span>
+  </h3>
+  <div id="settingsPanel" style="display:none;">
+    <div class="settings-panel">
+      <label for="tokenInput">AI 后端 Token</label>
+      <input id="tokenInput" type="password" placeholder="粘贴后端 .env 中的 PHISHGUARD_TOKEN" autocomplete="off" />
+      <div class="settings-hint">
+        如果后端 .env 中设置了 PHISHGUARD_TOKEN，请在此填入相同的 token。<br>
+        留空则不做 token 校验（仅本机开发模式）。
+      </div>
+      <div class="settings-row">
+        <button id="saveTokenBtn" class="primary">保存</button>
+        <button id="clearTokenBtn" class="secondary">清除</button>
+      </div>
+      <div id="tokenStatus"></div>
+    </div>
+  </div>
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
   <div id="result">
     <div class="status checking">正在加载本地检测结果…</div>
     <div class="skeleton" style="width: 80%;"></div>
     <div class="skeleton" style="width: 60%;"></div>
   </div>
+<<<<<<< HEAD
   <div class="footer">本地引擎检测 · 准确率 &lt; 50% 自动触发 AI 分析</div>
+=======
+  <div class="footer">本地引擎检测 · 准确率 &lt; 70% 自动触发 AI · 也可手动检测</div>
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
   <script src="lib/brands.js"></script>
   <script src="lib/urlUtils.js"></script>
   <script src="lib/levenshtein.js"></script>

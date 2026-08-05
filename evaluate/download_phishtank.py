@@ -114,11 +114,16 @@ def phishtank_to_dataset(records: list) -> list:
     """把 PhishTank JSON/CSV 转成 evaluate/dataset.json 格式"""
     out = []
     for r in records:
+<<<<<<< HEAD
         # JSON 字段名
         url = r.get("url", "") or r.get("phish_detail_url", "")
         # CSV 字段名
         if not url:
             url = r.get("url", "")
+=======
+        # JSON/CSV 字段名统一处理
+        url = r.get("url", "") or r.get("phish_detail_url", "")
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
         if not url:
             continue
 

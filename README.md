@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🛡️ PhishGuard-Vision — 你的智能钓鱼网站识别助手
 
 **PhishGuard-Vision** 是一个免费、开源的浏览器插件，可以帮你**自动识别正在访问的网页是不是钓鱼网站**。  
@@ -20,46 +21,106 @@
 ---
 
 ## 📸 效果截图
+=======
+# PhishGuard-Vision — 智能钓鱼网站检测助手
+
+**PhishGuard-Vision** 是一个免费、开源的 Chrome 浏览器插件，采用**本地规则引擎 + AI 深度分析**双层架构，自动识别正在访问的网页是否为钓鱼网站。
+
+它不只能告诉你"危险"，还会用**大白话解释为什么危险**，并在检测到钓鱼时**提供一键跳转到真正官方网站的按钮**。
+
+> 本项目是**网络空间安全专业毕业设计作品**，追求实用、可解释、易上手。
+>
+> 核心理念：**宁可误报，不漏报** —— 保护用户安全是第一优先级。
+
+---
+
+## 功能特性
+
+- **自动检测**：浏览网页时无需点击，工具栏 badge 即可看到当前页面风险等级
+- **AI 自动增强**：本地引擎准确率低于 70% 时自动触发 AI 深度分析，由 AI 做最终判定
+- **手动 AI 检测**：插件弹窗内置"手动 AI 深度检测"按钮，用户可随时主动触发 AI 审查
+- **详细理由**：用中文列出一条条具体原因，例如"域名模仿 PayPal 官方"或"使用免费托管平台 vercel.app"
+- **一键跳转官网**：检测到钓鱼时显示按钮，跳转前会做白名单校验，确保不会跳到另一个钓鱼站
+- **强制安全网**：当本地准确率极低（<20%）时直接判定为钓鱼；AI 判定为安全但准确率 <30% 时强制覆盖为钓鱼
+- **系统通知弹窗**：AI 判定为钓鱼时主动弹出 Chrome 系统通知提醒用户
+- **隐私优先**：默认 100% 本地运行；只有准确率低于 70% 时才会发送 URL + 纯文本 + 理由摘要给后端 AI，**绝不发送原始页面 HTML**
+- **开箱即用**：不启动任何后端也能用，核心检测能力全部内置在插件里
+
+---
+
+## 效果截图
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
 ![钓鱼网站检测效果](screenshots/钓鱼网站识别效果图.png)
 ![安全网站检测效果](screenshots/正常网站识别效果图.png)
 
 ---
 
+<<<<<<< HEAD
 ## 🏗️ 架构
+=======
+## 架构
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                       Chrome 浏览器                          │
 │  ┌────────────────────┐   ┌─────────────────────────────┐  │
+<<<<<<< HEAD
 │  │  content_script.js │──▶│  本地规则引擎（ruleEngine）   │  │
+=======
+│  │  contentScript.js  │──▶│  本地规则引擎（ruleEngine）   │  │
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 │  │  (自动检测+badge)  │   │  URL / 品牌 / 关键词 / 表单   │  │
 │  └────────────────────┘   └─────────────────────────────┘  │
 │           │                          │                      │
 │           ▼                          ▼                      │
 │  ┌─────────────────────────────────────────────────────┐   │
 │  │  background.js (Service Worker)                      │   │
+<<<<<<< HEAD
 │  │   · 保存最近一次本地结果                              │   │
 │  │   · 更新工具栏 badge（绿✓ / 橙? / 红!）              │   │
 │  │   · 仅在用户点击"申请 AI 审查"时调用后端              │   │
+=======
+│  │   · 保存最近一次本地结果（含 pageText）               │   │
+│  │   · 更新工具栏 badge（绿✓ / 橙? / 红!）              │   │
+│  │   · 准确率 <70% 时自动调用后端 AI                     │   │
+│  │   · AI 判定钓鱼时弹出系统通知                         │   │
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 │  └─────────────────────────────────────────────────────┘   │
 │           │                                                 │
 │           ▼                                                 │
 │  ┌────────────────────┐                                     │
 │  │  popup.html / .js  │  ◀── 用户主动打开时展示            │
 │  │  默认展示本地结果    │                                     │
+<<<<<<< HEAD
 │  │  显著风险时显示     │                                     │
 │  │  "申请 AI 审查"按钮 │                                     │
 │  └────────────────────┘                                     │
 └──────────────────────│──────────────────────────────────────┘
                        │ POST /check
                        │ (URL + title + 理由摘要，**不含 HTML**)
+=======
+│  │  手动 AI 检测按钮   │                                     │
+│  │  钓鱼警告+官网跳转  │                                     │
+│  └────────────────────┘                                     │
+└──────────────────────│──────────────────────────────────────┘
+                       │ POST /check
+                       │ (URL + title + pageText + local_accuracy + local_reasons)
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
                        ▼
         ┌────────────────────────────────────┐
         │  FastAPI 后端 (127.0.0.1:8000)       │
         │  · token 鉴权 + 速率限制             │
+<<<<<<< HEAD
         │  · 规则引擎辅助                       │
         │  · 调用 DeepSeek 语义分析（可选）     │
+=======
+        │  · 规则引擎（与前端同步）             │
+        │  · 强制安全网（<20% 直接判钓鱼）     │
+        │  · 调用 DeepSeek 语义分析            │
+        │  · AI 安全网覆盖（<30% 强制钓鱼）    │
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
         │  · 官网白名单校验                     │
         └──────────────│──────────────────────┘
                        ▼
@@ -68,6 +129,7 @@
 
 ---
 
+<<<<<<< HEAD
 ## 🚀 怎么安装和使用？（小白版）
 
 ### 第一步：安装插件
@@ -78,21 +140,44 @@
 4. 点击左上角 **"加载已解压的扩展程序"**，选择 `extension` 文件夹。
 5. 插件图标会出现在浏览器右上角，建议把它**固定到工具栏**。
 6. （可选）如需自定义图标，运行 `python extension/generate_icons.py` 可重新生成。
+=======
+## 快速开始
+
+### 第一步：安装插件
+
+1. 下载本项目 `extension` 文件夹到电脑任意位置
+2. 打开 Chrome 浏览器，地址栏输入 `chrome://extensions/` 并回车
+3. 打开右上角的 **"开发者模式"** 开关
+4. 点击左上角 **"加载已解载的扩展程序"**，选择 `extension` 文件夹
+5. 插件图标会出现在浏览器右上角，建议把它**固定到工具栏**
+6. （可选）如需自定义图标，运行 `python extension/generate_icons.py` 可重新生成
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
 ### 第二步：开始使用
 
 - 浏览任何网页时，工具栏图标会自动变化：
+<<<<<<< HEAD
   - 🟢 绿色 ✓ — 当前页面安全
   - ⚪ 灰色 · — 有少量异常特征
   - 🟠 橙色 ? — 检测到可疑特征，AI 分析中
   - 🔴 红色 ! — AI 判定为钓鱼网站
 - 点击插件图标查看详细判断理由。
 - 准确率低于 50% 时会**自动触发 AI 深度分析**，无需手动操作。
+=======
+  - 绿色 ✓ — 当前页面安全
+  - 灰色 · — 有少量异常特征
+  - 橙色 ? — 检测到可疑特征，AI 分析中
+  - 红色 ! — AI 判定为钓鱼网站
+- 点击插件图标查看详细判断理由
+- 准确率低于 70% 时会**自动触发 AI 深度分析**，无需手动操作
+- 也可点击插件弹窗中的"手动 AI 深度检测"按钮主动触发
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
 **就这么简单！不需要安装任何软件，也不需要写代码。**
 
 ---
 
+<<<<<<< HEAD
 ## 🤖 想用 AI 增强功能？（可选）
 
 如果你希望启用 AI 深度审查：
@@ -132,29 +217,77 @@
 ---
 
 ## ⚖️ 评分模型与 AI 触发策略
+=======
+## 启用 AI 增强功能（可选）
+
+如果你希望启用 AI 深度审查：
+
+1. 安装 Python 3.10+
+2. 进入 `backend` 文件夹，双击运行 `一键启动ai增强版.bat`（自动安装依赖并启动）
+3. 去 [DeepSeek 开放平台](https://platform.deepseek.com/) 注册并获取 API Key（有免费额度）
+4. 复制 `backend/.env.example` 为 `backend/.env`，填入：
+   ```
+   OPENAI_API_KEY=你的API-Key
+   MODEL_NAME=deepseek-chat
+   USE_AI_TEXT=true
+   PHISHGUARD_TOKEN=一个随机长字符串
+   ```
+5. 在插件弹窗中点击右上角 ⚙ 设置图标，将 `PHISHGUARD_TOKEN` 的值粘贴进去并保存
+6. 浏览可疑网站时，插件会自动连接后端进行 AI 分析
+
+> 即使不启动后端，插件依然可以正常工作（本地引擎），所有基础检测都在本地完成。
+
+---
+
+## 评分模型与 AI 触发策略
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
 采用**无罪推定模型**：默认准确率 99%，每发现一个钓鱼特征按特异性扣分。
 
 | 显著性 | 准确率 | UI 行为 |
 |--------|--------|---------|
+<<<<<<< HEAD
 | **SAFE** | ≥ 50% | 显示绿色 ✅，网站安全 |
 | **SUSPECT** | < 50% | 显示橙色 🔍，**自动触发 AI 深度分析**，由 AI 判定是否为钓鱼 |
 
 特征权重按"只有钓鱼网站才有的特征大扣分"原则分 4 档：
+=======
+| **SAFE** | ≥ 70% | 显示绿色 ✅，网站安全 |
+| **SUSPECT** | < 70% | 显示橙色 🔍，**自动触发 AI 深度分析** |
+
+### 三层防御体系
+
+| 防御层 | 触发条件 | 行为 |
+|--------|---------|------|
+| **第1层：直接拦截** | 准确率 < 20% | 跳过 AI，直接返回钓鱼判定（置信度 95%） |
+| **第2层：AI 提示词强制** | 准确率 < 30% / 50% | AI 被强制要求判定钓鱼，无例外 |
+| **第3层：安全网兜底** | AI 判安全但准确率 < 30% | 覆盖 AI 结果，强制改为钓鱼 |
+
+### 特征权重表
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
 | 等级 | 权重 | 特征 | 说明 |
 |------|------|------|------|
 | 极强 | 0.55 | IP 域名、品牌仿冒 | 几乎只有钓鱼网站才有，单独即触发 AI |
+<<<<<<< HEAD
 | 强 | 0.50 | 品牌不符、密码无 HTTPS、信用卡表单 | 钓鱼网站极常见，单独即触发 AI |
 | 中等 | 0.15~0.25 | 表单外提、@符号、高风险 TLD | 钓鱼常见但正常也可能有，需组合触发 |
 | 弱 | 0.03~0.08 | 无 HTTPS、域名过长、不常见 TLD | 轻微可疑，正常网站也有 |
 
 **本地引擎永不判定钓鱼**，只负责检测特征和计算准确率。准确率 < 50% 时自动将数据送往 AI 后端，由 AI 做最终判定。
+=======
+| 强 | 0.35~0.50 | 品牌不符、密码无 HTTPS、信用卡表单、登录表单、免费托管、品牌子域名 | 钓鱼网站极常见，单独即可触发 AI |
+| 中等 | 0.15~0.30 | 表单外提、@符号、高风险 TLD、多级子域名、敏感路径、敏感域名、短链接 | 钓鱼常见但正常也可能有，需组合触发 |
+| 弱 | 0.03~0.10 | 无 HTTPS、域名过长、不常见 TLD | 轻微可疑，正常网站也有 |
+
+**本地引擎永不判定钓鱼**，只负责检测特征和计算准确率。准确率 < 70% 时自动将数据送往 AI 后端，由 AI 做最终判定。
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
 > 调整阈值：见 `extension/lib/ruleEngine.js` 顶部的 `AI_REVIEW_LINE`。
 
 ---
 
+<<<<<<< HEAD
 ## 🧪 测试与评估
 
 ### 内置测试页面
@@ -165,6 +298,74 @@
 启动方式（任选其一）：
 ```bash
 # Python
+=======
+## 检测能力
+
+### URL 特征检测
+- IP 地址域名
+- 品牌域名仿冒（Levenshtein 相似度 ≥ 85%）
+- 品牌名出现在子域名中（如 `comcast2.vercel.app`）
+- 免费托管平台（vercel.app / netlify.app / weebly.com / wixstudio.com / r2.dev 等 40+）
+- 短链接服务（bit.ly / qrco.de / l.ead.me 等 30+）
+- 高风险 TLD（.xyz / .tk / .click / .skin 等 50+）
+- URL 路径敏感词（/login / /verify / /wallet 等）
+- 域名敏感词（login / secure / verify / auth 等）
+- 多级子域名堆砌
+- @ 符号混淆
+
+### 页面内容检测
+- 登录表单识别（密码框 / 用户名字段）
+- 信用卡/银行卡输入框
+- 表单提交至外部域名
+- 密码框无 HTTPS
+- 钓鱼/欺诈特有词汇（中英文 40+ 关键词）
+- 品牌名出现但域名不符
+- 可疑 meta refresh 跳转
+- 外链使用 IP 地址
+- 外链域名模仿品牌
+
+### 品牌库
+内置 60+ 知名品牌官方域名，涵盖：
+- 支付电商（PayPal / Amazon / Allegro / 淘宝 / 京东等）
+- 科技邮箱（Google / Microsoft / Apple / Facebook 等）
+- 银行金融（Chase / HSBC / Bradesco / Coinbase / MetaMask 等）
+- 快递物流（DHL / FedEx / UPS / USPS）
+- 电信服务（Comcast / Xfinity / Verizon / AT&T / Optus）
+- 政务税务（IRS）
+
+---
+
+## 隐私与安全设计
+
+我们把"**默认不上传、最小必要**"作为第一原则：
+
+| 数据 | 是否上传 | 触发条件 |
+|------|----------|----------|
+| URL | 是 | 准确率 < 70% 时自动触发 AI 分析 |
+| 页面标题 | 是 | 同上 |
+| 页面**纯文本**（2000 字） | 是 | 同上（供 AI 语义分析，不含 HTML 标签） |
+| 页面**完整 HTML** | **永不** | — |
+| 本地检测出的"理由摘要" | 是 | 准确率 < 70% 自动触发时附带 |
+| 表单输入内容（密码、卡号等） | **永不** | 不读取、不外发 |
+
+后端安全措施：
+- CORS 收紧到 `chrome-extension://*` 与本地回环
+- `PHISHGUARD_TOKEN` 共享密钥鉴权（强烈建议设置）
+- 内存级速率限制（60 秒 / 30 次）
+- AI 推断的"官网"必须经过**内置白名单校验**，避免 AI 幻觉跳到另一个钓鱼站
+- 所有 UI 渲染使用 `textContent`，杜绝 XSS
+
+---
+
+## 测试与评估
+
+### 内置测试页面
+项目自带测试页（`test_pages/`）：
+- `fake_paypal.html` — 典型钓鱼页（IP 提交 + 信用卡输入 + 品牌词）
+- `safe_site.html` — 正常博客
+
+```bash
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 cd test_pages && python -m http.server 8080
 # 或直接用浏览器打开
 ```
@@ -172,8 +373,12 @@ cd test_pages && python -m http.server 8080
 ### 规则引擎单元测试
 ```bash
 cd extension
+<<<<<<< HEAD
 node lib/ruleEngine.js  # 自检
 # 详见 tests/test_ruleEngine.js
+=======
+node tests/test_ruleEngine.js
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 ```
 
 ### 端到端评估
@@ -181,6 +386,7 @@ node lib/ruleEngine.js  # 自检
 cd evaluate
 python run_eval.py
 ```
+<<<<<<< HEAD
 会输出 Precision / Recall / F1 等指标，可用于毕业答辩。
 
 #### 使用 PhishTank 真实数据集
@@ -198,10 +404,36 @@ python run_eval.py
 ---
 
 ## 📁 项目结构
+=======
+
+### PhishTank 真实数据集测试
+项目内置 PhishTank 批量测试脚本，可对 69000+ 真实钓鱼 URL 进行抽样评估：
+
+```bash
+cd evaluate
+python test_phishtank.py
+```
+
+测试结果（200 条抽样 + 20 条安全网站）：
+
+| 指标 | 数值 |
+|------|------|
+| Precision | 100% |
+| Recall（AI 触发率） | 65.5% |
+| F1 | 0.792 |
+| 误报率 | 0% |
+
+> 数据来源：[PhishTank](https://phishtank.org/developer_info.php) verified_online.csv
+
+---
+
+## 项目结构
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
 ```
 PhishGuard-Vision-main/
 ├── extension/                     # 浏览器插件
+<<<<<<< HEAD
 │   ├── manifest.json              # MV3 配置
 │   ├── popup.html / popup.js      # 弹出层
 │   ├── contentScript.js           # 自动检测（注入到每个 http/https 页）
@@ -221,23 +453,63 @@ PhishGuard-Vision-main/
 │   └── 一键启动ai增强版.bat
 ├── test_pages/                    # 演示用钓鱼/正常页面
 ├── evaluate/                      # 评估脚本
+=======
+│   ├── manifest.json              # MV3 配置（v1.2.0）
+│   ├── popup.html / popup.js      # 弹出层 UI
+│   ├── contentScript.js           # 自动检测（注入到每个 http/https 页）
+│   ├── background.js              # Service Worker（badge + 消息路由 + AI 调用）
+│   ├── generate_icons.py          # 图标生成脚本
+│   ├── icons/                     # 4 个尺寸 PNG 图标
+│   ├── lib/                       # 规则引擎模块
+│   │   ├── brands.js              #   品牌库（60+ 品牌，40+ 免费托管，30+ 短链接）
+│   │   ├── urlUtils.js            #   URL 工具
+│   │   ├── levenshtein.js         #   字符串相似度
+│   │   ├── tlds.js                #   TLD 白名单 + 高风险黑名单
+│   │   └── ruleEngine.js          #   规则引擎主逻辑（无罪推定模型）
+│   └── tests/
+│       └── test_ruleEngine.js     # 单元测试
+├── backend/                       # Python FastAPI 后端（可选）
+│   ├── app.py                     # 主程序（规则引擎 + AI 调用 + 三层安全网）
+│   ├── requirements.txt           # Python 依赖
+│   ├── .env.example               # 环境变量模板
+│   └── 一键启动ai增强版.bat        # Windows 一键启动脚本
+├── evaluate/                      # 评估脚本
+│   ├── run_eval.py                # 端到端评估（Precision/Recall/F1）
+│   ├── test_phishtank.py          # PhishTank 真实数据集批量测试
+│   ├── download_phishtank.py      # PhishTank 数据下载工具
+│   └── dataset.example.json       # 数据集模板
+├── scripts/
+│   └── build_package.py           # Chrome Web Store 打包脚本（自动排除密钥）
+├── test_pages/                    # 演示用钓鱼/正常页面
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 ├── screenshots/                   # 效果截图
 └── README.md
 ```
 
 ---
 
+<<<<<<< HEAD
 ## ⚙️ 配置选项
 
 | 环境变量 | 默认 | 说明 |
 |----------|------|------|
 | `OPENAI_API_KEY` | 空 | DeepSeek API Key（必填才能用 AI） |
 | `OPENAI_BASE_URL` | `https://api.deepseek.com/v1` | API base |
+=======
+## 配置选项
+
+| 环境变量 | 默认值 | 说明 |
+|----------|--------|------|
+| `OPENAI_API_KEY` | 空 | DeepSeek API Key（必填才能用 AI） |
+| `OPENAI_BASE_URL` | `https://api.deepseek.com/v1` | API base URL |
+| `MODEL_NAME` | `deepseek-chat` | 使用的模型名称 |
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 | `USE_AI_TEXT` | `false` | 是否启用 AI 审查 |
 | `PHISHGUARD_TOKEN` | 空 | 共享鉴权 token，**强烈建议设置** |
 
 ---
 
+<<<<<<< HEAD
 ## 🛡️ 安全注意事项
 
 1. **PHISHGUARD_TOKEN 必须设置**：仅靠 CORS 不能阻止恶意网页直接 fetch 你的后端。
@@ -248,13 +520,55 @@ PhishGuard-Vision-main/
 ---
 
 ## 📜 License
+=======
+## Chrome Web Store 打包
+
+```bash
+python scripts/build_package.py
+```
+
+打包脚本会自动：
+- 排除 `.env` 文件（防止 API Key 泄露）
+- 排除 `__pycache__`、`venv` 等开发文件
+- 生成 `dist/phishguard-vision-v1.2.0.zip`
+
+---
+
+## 安全注意事项
+
+1. **PHISHGUARD_TOKEN 必须设置**：仅靠 CORS 不能阻止恶意网页直接 fetch 你的后端
+2. **AI 推断的官网不直接信任**：插件会做白名单校验，失败时回退到本地品牌库
+3. **永不直接执行 HTML**：所有 UI 渲染都用 `textContent`，避免 XSS
+4. **WHOIS 隔离**：`safe_whois()` 在线程池跑且 4 秒超时，永不阻塞 API
+5. **API Key 安全**：`.gitignore` 已排除 `.env` 文件，打包脚本也会自动排除
+
+---
+
+## 技术栈
+
+- **前端**：Chrome Extension Manifest V3，JavaScript（无框架依赖）
+- **后端**：Python FastAPI + httpx + DeepSeek API
+- **评估**：Python + Node.js（复用浏览器真实规则引擎代码）
+- **AI 模型**：DeepSeek-Chat
+
+---
+
+## License
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
 MIT（仅供学习与毕设演示使用，请勿用于商业钓鱼攻击相关场景）。
 
 ---
 
+<<<<<<< HEAD
 ## ✉️ 致谢
 
 - 灵感与品牌库参考自 PhishTank、OpenPhish
 - 评估数据可使用 [PhishTank 公开数据集](https://phishtank.org/developer_info.php)
+=======
+## 致谢
+
+- 灵感与品牌库参考自 PhishTank、OpenPhish
+- 评估数据使用 [PhishTank 公开数据集](https://phishtank.org/developer_info.php)
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 - AI 模型：[DeepSeek](https://platform.deepseek.com/)

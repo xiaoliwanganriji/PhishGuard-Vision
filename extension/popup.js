@@ -76,16 +76,34 @@ function renderLocalResult(local) {
         }));
     }
 
+<<<<<<< HEAD
     // 可疑区域提示：准确率低于 50%，自动触发 AI
+=======
+    // 可疑区域提示：准确率低于 70%，自动触发 AI
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     if (sig === "SUSPECT" && aiWorthy) {
         result.appendChild(el("div", {
             className: "reason",
             style: { color: "#735c0f", fontStyle: "italic" },
+<<<<<<< HEAD
             text: "准确率低于 50%，已自动启动 AI 深度分析，请稍候…"
+=======
+            text: "准确率低于 70%，已自动启动 AI 深度分析，请稍候…"
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
         }));
     }
 
     const actions = el("div", { className: "actions" });
+<<<<<<< HEAD
+=======
+    // 手动 AI 检测按钮：用户可随时主动触发 AI 审查
+    const aiBtn = el("button", {
+        className: "ai-btn",
+        text: "🤖 手动 AI 深度检测"
+    });
+    aiBtn.addEventListener("click", () => requestAiReview());
+    actions.appendChild(aiBtn);
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     const retry = el("button", {
         className: "secondary",
         text: "重新检测当前页"
@@ -100,6 +118,7 @@ function renderAiResult(ai, local) {
     clear(result);
 
     const isPhish = !!ai.is_phishing;
+<<<<<<< HEAD
     const status = el("div", {
         className: "status " + (isPhish ? "phishing" : "safe"),
         text: (isPhish ? "⚠️ 钓鱼网站" : "✅ 安全网站") +
@@ -109,11 +128,41 @@ function renderAiResult(ai, local) {
     status.appendChild(document.createTextNode(" "));
     status.appendChild(tag);
     result.appendChild(status);
+=======
+    const accuracyPct = Math.round((ai.accuracy || 0) * 100);
+
+    if (isPhish) {
+        // === 钓鱼警告弹窗：醒目红色警告 ===
+        const alert = el("div", { className: "phish-alert" });
+        alert.appendChild(el("div", {
+            className: "alert-title",
+            text: "⚠️ 警告：钓鱼网站！"
+        }));
+        alert.appendChild(el("div", {
+            text: "AI 判定当前页面为钓鱼网站（置信度 " + accuracyPct + "%）",
+            style: { color: "#cb2431", fontSize: "13px" }
+        }));
+        result.appendChild(alert);
+    } else {
+        const status = el("div", {
+            className: "status safe",
+            text: "✅ AI 判定安全 (置信度 " + accuracyPct + "%)"
+        });
+        const tag = el("span", { className: "tag tag-ai", text: "AI 增强" });
+        status.appendChild(document.createTextNode(" "));
+        status.appendChild(tag);
+        result.appendChild(status);
+    }
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
     const reasons = [...new Set([...(ai.reasons || []), ...(local?.reasons || [])])];
     if (reasons.length) {
         const wrap = el("div", { className: "reason" });
+<<<<<<< HEAD
         wrap.appendChild(el("strong", { text: "综合判断理由：" }));
+=======
+        wrap.appendChild(el("strong", { text: isPhish ? "判断理由：" : "综合判断理由：" }));
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
         const ul = el("ul");
         reasons.forEach(r => ul.appendChild(el("li", { text: r })));
         wrap.appendChild(ul);
@@ -135,6 +184,10 @@ function renderAiResult(ai, local) {
 
     const actions = el("div", { className: "actions" });
     if (isPhish && officialUrl) {
+<<<<<<< HEAD
+=======
+        // 钓鱼网站：显示醒目的官网跳转按钮
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
         const btn = el("button", {
             className: "official-btn",
             text: "🔒 前往 " + (officialName || "官方网站")
@@ -151,10 +204,42 @@ function renderAiResult(ai, local) {
 function renderAiError(err) {
     const result = document.getElementById("result");
     clear(result);
+<<<<<<< HEAD
     result.appendChild(el("div", {
         className: "status error",
         text: "AI 审查失败：" + err
     }));
+=======
+
+    // 401 错误：引导用户配置 token
+    if (err && err.includes("401")) {
+        result.appendChild(el("div", {
+            className: "status error",
+            text: "AI 审查失败：后端拒绝访问（401）"
+        }));
+        const hint = el("div", { className: "reason" });
+        hint.appendChild(el("strong", { text: "原因：" }));
+        hint.appendChild(document.createTextNode("你的后端设置了访问 Token，但插件中未配置或 Token 不匹配。"));
+        result.appendChild(hint);
+
+        const fix = el("div", { className: "reason" });
+        fix.appendChild(el("strong", { text: "解决方法：" }));
+        const ol = document.createElement("ol");
+        ol.style.paddingLeft = "18px";
+        ol.style.margin = "4px 0";
+        ol.appendChild(el("li", { text: "点击右上角 ⚙ 设置图标" }));
+        ol.appendChild(el("li", { text: "将后端 .env 中的 PHISHGUARD_TOKEN 粘贴到输入框" }));
+        ol.appendChild(el("li", { text: "点击「保存」，然后重新检测" }));
+        fix.appendChild(ol);
+        result.appendChild(fix);
+    } else {
+        result.appendChild(el("div", {
+            className: "status error",
+            text: "AI 审查失败：" + err
+        }));
+    }
+
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     const back = el("button", { className: "secondary", text: "返回" });
     back.addEventListener("click", () => runFullDetection());
     const actions = el("div", { className: "actions" });
@@ -271,7 +356,12 @@ async function runFullDetection() {
                 accuracy: local.accuracy,
                 score: local.score, significance: local.significance,
                 aiWorthy: local.aiWorthy,
+<<<<<<< HEAD
                 reasons: local.reasons, matchedBrand: local.matchedBrand
+=======
+                reasons: local.reasons, matchedBrand: local.matchedBrand,
+                pageText: r.pageText || ""
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
             };
             source = "fallback";
         } catch (e) {
@@ -293,7 +383,30 @@ async function runFullDetection() {
     // 保存最近一次本地结果供 AI 审查使用
     runFullDetection._lastLocal = { ...data, _ui: localForUi };
 
+<<<<<<< HEAD
     // 准确率低于 50%（AI_REVIEW_LINE）时自动触发 AI 分析
+=======
+    // 同步到 background 缓存，确保 AI 请求时能拿到完整数据（含 pageText）
+    try {
+        await chrome.runtime.sendMessage({
+            type: "PHISHGUARD_RESULT",
+            payload: {
+                url: data.url,
+                title: data.title || "",
+                accuracy: data.accuracy,
+                score: data.score,
+                significance: data.significance,
+                aiWorthy: data.aiWorthy,
+                reasons: data.reasons,
+                matchedBrand: data.matchedBrand,
+                pageText: data.pageText || "",
+                ts: Date.now()
+            }
+        });
+    } catch (e) { /* 忽略，contentScript 会自动上报 */ }
+
+    // 准确率低于 70%（AI_REVIEW_LINE）时自动触发 AI 分析
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     if (localForUi.aiWorthy) {
         requestAiReview();
     }
@@ -348,7 +461,78 @@ async function requestAiReview() {
     }
 }
 
+<<<<<<< HEAD
 // ---------- 入口 ----------
 document.addEventListener("DOMContentLoaded", async () => {
+=======
+// ---------- 设置面板（Token 配置） ----------
+const STORAGE_KEY_OPTIONS = "phishguard_options";
+
+async function loadToken() {
+    try {
+        const data = await chrome.storage.local.get(STORAGE_KEY_OPTIONS);
+        const opts = data[STORAGE_KEY_OPTIONS] || {};
+        return opts.aiToken || "";
+    } catch { return ""; }
+}
+
+async function saveToken(token) {
+    try {
+        const data = await chrome.storage.local.get(STORAGE_KEY_OPTIONS);
+        const opts = data[STORAGE_KEY_OPTIONS] || {};
+        opts.aiToken = token;
+        await chrome.storage.local.set({ [STORAGE_KEY_OPTIONS]: opts });
+        return true;
+    } catch { return false; }
+}
+
+function initSettingsPanel() {
+    const icon = document.getElementById("settingsIcon");
+    const panel = document.getElementById("settingsPanel");
+    const input = document.getElementById("tokenInput");
+    const saveBtn = document.getElementById("saveTokenBtn");
+    const clearBtn = document.getElementById("clearTokenBtn");
+    const status = document.getElementById("tokenStatus");
+
+    // 切换显示
+    icon.addEventListener("click", async () => {
+        if (panel.style.display === "none") {
+            panel.style.display = "block";
+            const token = await loadToken();
+            input.value = token;
+            status.textContent = token ? "" : "";
+        } else {
+            panel.style.display = "none";
+        }
+    });
+
+    // 保存 token
+    saveBtn.addEventListener("click", async () => {
+        const val = input.value.trim();
+        const ok = await saveToken(val);
+        if (ok) {
+            status.textContent = val ? "✓ Token 已保存" : "✓ 已清除 Token";
+            status.className = "token-saved";
+        } else {
+            status.textContent = "保存失败";
+            status.className = "token-error";
+        }
+        setTimeout(() => { status.textContent = ""; }, 3000);
+    });
+
+    // 清除 token
+    clearBtn.addEventListener("click", async () => {
+        input.value = "";
+        await saveToken("");
+        status.textContent = "✓ 已清除 Token";
+        status.className = "token-saved";
+        setTimeout(() => { status.textContent = ""; }, 3000);
+    });
+}
+
+// ---------- 入口 ----------
+document.addEventListener("DOMContentLoaded", async () => {
+    initSettingsPanel();
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     await runFullDetection();
 });

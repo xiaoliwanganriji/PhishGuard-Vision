@@ -2,7 +2,11 @@
 // 运行：node tests/test_ruleEngine.js
 // 不依赖任何测试框架，原生 assert 即可
 // 注意：本地引擎永不判定钓鱼（isPhishing 始终为 false），只负责检测特征和计算准确率
+<<<<<<< HEAD
 //       准确率 < 50% 时 aiWorthy=true，自动触发 AI 分析
+=======
+//       准确率 < 70%（AI_REVIEW_LINE）时 aiWorthy=true，自动触发 AI 分析
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
 const assert = require("assert");
 const path = require("path");
@@ -142,7 +146,11 @@ test("CARD_INPUT 单独 → SUSPECT，触发 AI", () => {
 });
 
 console.log("\n=== 中等特征（需组合触发 AI） ===");
+<<<<<<< HEAD
 test("单条 FORM_EXTERNAL → SAFE（准确率 74%）", () => {
+=======
+test("单条 FORM_EXTERNAL → SUSPECT（准确率 69%）", () => {
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     const r = engine.analyze({
         url: "https://safe.com/form",
         pageText: "submit form",
@@ -155,12 +163,21 @@ test("单条 FORM_EXTERNAL → SAFE（准确率 74%）", () => {
         html: ""
     });
     assert.strictEqual(r.isPhishing, false);
+<<<<<<< HEAD
     // FORM_EXTERNAL 扣 0.25 → accuracy = 0.74
     assert.strictEqual(r.significance, "SAFE");
     assert.strictEqual(r.aiWorthy, false, "单条中等特征不应触发 AI");
 });
 
 test("HIGH_RISK_TLD + NO_HTTPS → SAFE（准确率 67%）", () => {
+=======
+    // FORM_EXTERNAL 扣 0.30 → accuracy = 0.69 < 0.70 → SUSPECT
+    assert.strictEqual(r.significance, "SUSPECT");
+    assert.ok(r.aiWorthy, "FORM_EXTERNAL(-30%) 单独即触发 AI（70% 阈值）");
+});
+
+test("HIGH_RISK_TLD + NO_HTTPS → SUSPECT（准确率 61%）", () => {
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     const r = engine.analyze({
         url: "http://example.tk/page",
         pageText: "welcome",
@@ -169,9 +186,15 @@ test("HIGH_RISK_TLD + NO_HTTPS → SAFE（准确率 67%）", () => {
         html: ""
     });
     assert.strictEqual(r.isPhishing, false);
+<<<<<<< HEAD
     // HIGH_RISK_TLD(-0.25) + NO_HTTPS(-0.08) = 0.33 → accuracy = 0.67
     assert.strictEqual(r.significance, "SAFE");
     assert.strictEqual(r.aiWorthy, false);
+=======
+    // HIGH_RISK_TLD(-0.30) + NO_HTTPS(-0.08) = 0.38 → accuracy = 0.61 < 0.70
+    assert.strictEqual(r.significance, "SUSPECT");
+    assert.ok(r.aiWorthy, "HIGH_RISK_TLD + NO_HTTPS 组合应触发 AI");
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 });
 
 test("AT_SYMBOL + HIGH_RISK_TLD → SUSPECT，触发 AI", () => {
@@ -183,15 +206,25 @@ test("AT_SYMBOL + HIGH_RISK_TLD → SUSPECT，触发 AI", () => {
         html: ""
     });
     assert.strictEqual(r.isPhishing, false);
+<<<<<<< HEAD
     // AT_SYMBOL(-0.25) + HIGH_RISK_TLD(-0.25) + NO_HTTPS(-0.08) = 0.58 → accuracy = 0.41
     assert.strictEqual(r.significance, "SUSPECT");
     assert.ok(r.aiWorthy, "AT_SYMBOL + HIGH_RISK_TLD + NO_HTTPS 组合应触发 AI");
+=======
+    // AT_SYMBOL(-0.25) + HIGH_RISK_TLD(-0.30) + NO_HTTPS(-0.08) + SENSITIVE_PATH(-0.25) → SUSPECT
+    assert.strictEqual(r.significance, "SUSPECT");
+    assert.ok(r.aiWorthy, "多特征组合应触发 AI");
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 });
 
 console.log("\n=== 误报抑制 ===");
 test("仅 HTTP 的合法页 → SAFE", () => {
     const r = engine.analyze({
+<<<<<<< HEAD
         url: "http://a.b.c.example.com/some/long/path",
+=======
+        url: "http://example.com/some/long/path",
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
         pageText: "Welcome to our blog",
         links: [],
         forms: [],
@@ -202,7 +235,11 @@ test("仅 HTTP 的合法页 → SAFE", () => {
     assert.strictEqual(r.aiWorthy, false);
 });
 
+<<<<<<< HEAD
 test("普通网站有登录表单不应被标记", () => {
+=======
+test("普通网站有登录表单 + /login 路径 → SUSPECT（宁可误报）", () => {
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     const r = engine.analyze({
         url: "https://normal-site.com/login",
         pageText: "Welcome, please login",
@@ -219,7 +256,14 @@ test("普通网站有登录表单不应被标记", () => {
         html: ""
     });
     assert.strictEqual(r.isPhishing, false);
+<<<<<<< HEAD
     assert.strictEqual(r.significance, "SAFE");
+=======
+    // LOGIN_FORM(-0.35) + SENSITIVE_PATH(-0.25) = 0.60 → accuracy = 0.39 < 0.70
+    // 宁可误报：登录表单+敏感路径组合触发 AI 审查
+    assert.strictEqual(r.significance, "SUSPECT");
+    assert.ok(r.aiWorthy, "登录表单+敏感路径应触发 AI（宁可误报不漏报）");
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 });
 
 test("SPA 中的 JS location 跳转不误报", () => {
@@ -246,17 +290,29 @@ test("品牌词出现在不含表单的普通网页上不误报", () => {
     assert.strictEqual(r.significance, "SAFE");
 });
 
+<<<<<<< HEAD
 test("可疑关键词不计分（INFO 级别）", () => {
     const r = engine.analyze({
         url: "https://normal-bbs.com/login",
+=======
+test("可疑关键词单独触发 SUSPECT（已计入扣分）", () => {
+    const r = engine.analyze({
+        url: "https://normal-bbs.com/article",
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
         pageText: "恭喜中奖 您的账户已被锁定 请尽快解锁",
         links: [],
         forms: [],
         html: ""
     });
     assert.strictEqual(r.isPhishing, false);
+<<<<<<< HEAD
     assert.strictEqual(r.score, 0, "INFO 级别不计分");
     assert.ok(r.reasons.some(s => s.includes("恭喜") || s.includes("提及")), "应展示信息项");
+=======
+    // SUSPICIOUS_WORDS(-0.35) → accuracy = 0.64 < 0.70 → SUSPECT
+    assert.strictEqual(r.significance, "SUSPECT");
+    assert.ok(r.reasons.some(s => s.includes("恭喜") || s.includes("锁定")), "应展示可疑关键词");
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 });
 
 console.log("\n=== 重定向检测 ===");
@@ -296,19 +352,61 @@ test("localhost 不误判", () => {
     assert.strictEqual(r.isPhishing, false);
 });
 
+<<<<<<< HEAD
 test("URL @ 符号：触发 AT_SYMBOL", () => {
     const r = engine.analyze({
         url: "https://safe.com@evil.com/login",
         pageText: "login",
+=======
+test("URL @ 符号：触发 AT_SYMBOL，单独不触发 AI", () => {
+    const r = engine.analyze({
+        url: "https://safe.com@evil.com/page",
+        pageText: "some content",
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
         links: [],
         forms: [],
         html: ""
     });
     assert.ok(r.reasons.some(s => s.includes("@")));
+<<<<<<< HEAD
     // AT_SYMBOL(-25%) 单独扣 → accuracy 74%，不触发 AI
+=======
+    // AT_SYMBOL(-0.25) 单独扣 → accuracy 74% > 70% → SAFE
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     assert.strictEqual(r.aiWorthy, false, "AT_SYMBOL 单独扣 25%，不应触发 AI");
     assert.strictEqual(r.significance, "SAFE");
 });
 
+<<<<<<< HEAD
+=======
+test("短链接服务 → SUSPECT，触发 AI", () => {
+    const r = engine.analyze({
+        url: "https://bit.ly/abc123",
+        pageText: "click here",
+        links: [],
+        forms: [],
+        html: ""
+    });
+    assert.strictEqual(r.isPhishing, false);
+    // SHORT_URL(-0.30) → accuracy = 0.69 < 0.70 → SUSPECT
+    assert.strictEqual(r.significance, "SUSPECT");
+    assert.ok(r.aiWorthy, "短链接服务应触发 AI");
+});
+
+test("免费托管平台 → SUSPECT，触发 AI", () => {
+    const r = engine.analyze({
+        url: "https://my-site.vercel.app/login",
+        pageText: "welcome",
+        links: [],
+        forms: [],
+        html: ""
+    });
+    assert.strictEqual(r.isPhishing, false);
+    // FREE_HOSTING(-0.35) + SENSITIVE_PATH(-0.25) → SUSPECT
+    assert.strictEqual(r.significance, "SUSPECT");
+    assert.ok(r.aiWorthy, "免费托管平台应触发 AI");
+});
+
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 console.log(`\n=== 结果: ${passed} 通过, ${failed} 失败 ===`);
 process.exit(failed > 0 ? 1 : 0);

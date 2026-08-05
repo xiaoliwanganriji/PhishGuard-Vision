@@ -8,12 +8,23 @@ const COMMON_TLDS = new Set([
     "de", "fr", "it", "es", "nl", "se", "no", "fi", "dk", "pl",
     "ru", "jp", "kr", "tw", "hk", "sg", "in", "au", "nz", "ca", "mx", "br",
     "io", "co", "me", "info", "biz", "tv", "app", "dev", "ai", "cloud",
+<<<<<<< HEAD
     "site", "online", "tech", "cc", "ws", "fm", "bz", "to", "gl", "gd", "gs",
     "us", "ag", "lc", "vc", "tt", "ky", "vg", "vi", "pr",
     "aero", "coop", "museum", "name", "pro", "travel", "jobs", "mobi", "cat", "tel",
     "asia", "xxx", "gov.cn", "mil.cn", "net.cn", "org.cn", "com.cn",
     "com.hk", "edu.hk", "gov.hk", "idv.hk", "net.hk", "org.hk",
     "com.tw", "edu.tw", "gov.tw", "idv.tw", "net.tw", "org.tw"
+=======
+    "tech", "cc", "ws", "fm", "bz", "to", "gl", "gd", "gs",
+    "us", "ag", "lc", "vc", "tt", "ky", "vg", "vi", "pr",
+    "aero", "coop", "museum", "name", "pro", "travel", "jobs", "mobi", "cat", "tel",
+    "asia", "xxx",
+    "com.hk", "edu.hk", "gov.hk", "idv.hk", "net.hk", "org.hk",
+    "com.tw", "edu.tw", "gov.tw", "idv.tw", "net.tw", "org.tw",
+    "com.br", "com.au", "com.mx", "com.ar", "com.sg", "com.my",
+    "co.jp", "co.kr", "co.in", "co.za", "co.id", "co.th", "co.nz"
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 ]);
 
 // 高风险 TLD：钓鱼网站高发域名后缀
@@ -22,9 +33,20 @@ const HIGH_RISK_TLDS = new Set([
     "xyz", "top", "club", "icu", "vip", "shop", "store", "buzz", "lol", "loan",
     "click", "download", "zip", "country", "stream", "gq", "ml", "cf", "ga", "pw",
     "tk", "work", "date", "faith", "review", "bid", "trade", "accountant", "online",
+<<<<<<< HEAD
     "site", "world", "click", "finance", "cricket", "exchange", "promo",
     "science", "party", "investments", "camera", "sale", "agency", "market",
     "cards", "gmbh", "holdings", "company", "ltd", "group"
+=======
+    "site", "world", "finance", "cricket", "exchange", "promo",
+    "science", "party", "investments", "camera", "sale", "agency", "market",
+    "cards", "gmbh", "holdings", "company", "ltd", "group",
+    "skin", "rest", "uno", "monster", "sbs", "cyou", "hair", "beauty",
+    "makeup", "quest", "bond", "monster", "cfd", "racing", "apk",
+    "bar", "best", "cam", "casa", "fun", "host", "icu", "life",
+    "live", "men", "mom", "move", "page", "pro", "red", "run",
+    "sky", "tax", "tec", "win", "wtf", "xxx", "you"
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 ]);
 
 function isCommonTld(tld) {

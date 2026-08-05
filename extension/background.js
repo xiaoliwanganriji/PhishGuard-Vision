@@ -77,10 +77,17 @@ async function getResult(tabId) {
     return (data[STORAGE_KEY_RESULTS] || {})[tabId] || null;
 }
 
+<<<<<<< HEAD
 // 调用后端做 AI 审查（用户主动触发）
 async function callAiBackend({ url, title, pageText, token }) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
+=======
+// 调用后端做 AI 审查（用户主动触发或自动触发）
+async function callAiBackend({ url, title, pageText, localAccuracy, localReasons, token }) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     try {
         const resp = await fetch("http://127.0.0.1:8000/check", {
             method: "POST",
@@ -88,7 +95,17 @@ async function callAiBackend({ url, title, pageText, token }) {
                 "Content-Type": "application/json",
                 "X-PhishGuard-Token": token || ""
             },
+<<<<<<< HEAD
             body: JSON.stringify({ url, title, page_text: pageText }),
+=======
+            body: JSON.stringify({
+                url,
+                title,
+                page_text: pageText,
+                local_accuracy: localAccuracy,
+                local_reasons: localReasons
+            }),
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
             signal: controller.signal
         });
         clearTimeout(timeout);
@@ -125,8 +142,18 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
                 return;
             }
             const opts = (await chrome.storage.local.get(STORAGE_KEY_OPTIONS))[STORAGE_KEY_OPTIONS] || {};
+<<<<<<< HEAD
             const ai = await callAiBackend({
                 url: r.url, title: r.title || "", pageText: r.reasons.join("\n"),
+=======
+            // 传真实页面文本 + 本地准确率 + 检测理由给 AI
+            const ai = await callAiBackend({
+                url: r.url,
+                title: r.title || "",
+                pageText: r.pageText || "",
+                localAccuracy: r.accuracy || 0,
+                localReasons: r.reasons || [],
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
                 token: opts.aiToken || ""
             });
             if (ai.error) {
@@ -149,6 +176,24 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
             };
             await saveResult(sender.tab.id, merged);
             await setBadgeForTab(sender.tab.id, merged);
+<<<<<<< HEAD
+=======
+
+            // AI 判定为钓鱼时：主动弹系统通知提醒用户
+            if (msg.payload?.is_phishing) {
+                try {
+                    await chrome.notifications.create({
+                        type: "basic",
+                        iconUrl: "icons/icon-128.png",
+                        title: "⚠️ PhishGuard 警告：检测到钓鱼网站！",
+                        message: "AI 判定当前页面为钓鱼网站，请勿输入任何信息。" +
+                                 (msg.payload?.ai_official_url ? "已为你准备官网跳转按钮，点击插件查看。" : "点击插件图标查看详情。"),
+                        priority: 2,
+                        requireInteraction: true
+                    });
+                } catch (e) { /* 通知失败不影响主流程 */ }
+            }
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
             sendResponse({ ok: true });
             return;
         }

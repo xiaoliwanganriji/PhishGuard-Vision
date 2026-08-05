@@ -50,9 +50,16 @@
             accuracy: result.accuracy,
             score: result.score,
             significance: result.significance,   // SAFE | SUSPECT
+<<<<<<< HEAD
             aiWorthy: result.aiWorthy,           // 准确率 < 50% 时为 true
             reasons: result.reasons,
             matchedBrand: result.matchedBrand,
+=======
+            aiWorthy: result.aiWorthy,           // 准确率 < 70% 时为 true
+            reasons: result.reasons,
+            matchedBrand: result.matchedBrand,
+            pageText: data.pageText,             // 页面纯文本（供 AI 分析，不外发 HTML）
+>>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
             ts: Date.now()
         };
     }
