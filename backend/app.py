@@ -57,11 +57,8 @@ class CheckRequest(BaseModel):
     url: str = ""
     title: str = ""
     page_text: str = ""   # 注意：只接纯文本，不再接 html
-<<<<<<< HEAD
-=======
     local_accuracy: float = 0.0   # 本地引擎准确率
     local_reasons: list[str] = [] # 本地引擎检测到的可疑特征
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
 
 class CheckResponse(BaseModel):
@@ -106,8 +103,6 @@ BRANDS = {
     "jd.com": "京东",
     "qq.com": "腾讯",
     "baidu.com": "百度",
-<<<<<<< HEAD
-=======
     "instagram.com": "Instagram",
     "twitter.com": "Twitter",
     "linkedin.com": "LinkedIn",
@@ -157,7 +152,6 @@ BRANDS = {
     "ebay.com": "eBay",
     "allegro.pl": "Allegro",
     "allegro.com": "Allegro",
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 }
 
 OFFICIAL_SITES = {
@@ -172,18 +166,6 @@ OFFICIAL_SITES = {
     "京东": "https://www.jd.com",
     "腾讯": "https://www.qq.com",
     "百度": "https://www.baidu.com",
-<<<<<<< HEAD
-}
-
-# 可疑关键词：只保留钓鱼/欺诈场景的特异性词汇
-# 泛化的"登录""安全""验证"等正常网站常用词已移除，避免误报
-SUSPICIOUS_KEYWORDS = [
-    "verify your account", "confirm your password", "account suspended",
-    "信用卡号", "银行卡号", "身份证号", "有效期", "CVV", "安全码",
-    "恭喜中奖", "您的账户已被锁定", "解锁账户",
-]
-
-=======
     "Instagram": "https://www.instagram.com",
     "Coinbase": "https://www.coinbase.com",
     "MetaMask": "https://metamask.io",
@@ -285,7 +267,6 @@ COMMON_TLDS_SET = {
     "us", "com.br", "com.au", "com.cn", "com.hk", "com.tw",
 }
 
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
 # ---------- 工具函数 ----------
 def normalize_text(s: str) -> str:
@@ -336,42 +317,14 @@ def lev_ratio(a: str, b: str) -> float:
 
 
 def rule_engine(url: str, page_text: str) -> tuple[bool, float, list[str], str | None]:
-<<<<<<< HEAD
-    """基于 URL + 纯文本的规则引擎（与前端 ruleEngine.js 保持一致：无罪推定模型）
-    本地引擎不判定钓鱼，只计算准确率。准确率 < 50% 时由 AI 判定。
-    返回值第一个元素 is_phish 始终为 False（兼容旧接口）。
-    """
-
-    # 扣分权重表（与前端 DEDUCTION_WEIGHTS 对应）
-=======
     """基于 URL + 纯文本的规则引擎（与前端 ruleEngine.js 保持一致）"""
 
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     DEDUCTION_WEIGHTS = {
         "IP_DOMAIN":         0.55,
         "BRAND_TYPOSQUAT":   0.55,
         "BRAND_MISMATCH":    0.50,
         "PASSWORD_NO_HTTPS": 0.50,
         "CARD_INPUT":        0.50,
-<<<<<<< HEAD
-        "FORM_EXTERNAL":     0.25,
-        "AT_SYMBOL":         0.25,
-        "HIGH_RISK_TLD":     0.25,
-        "LINK_IP":           0.18,
-        "LINK_BRAND_IMPER":  0.18,
-        "META_REDIRECT":     0.15,
-        "UNCOMMON_TLD":      0.08,
-        "NO_HTTPS":          0.08,
-        "LONG_DOMAIN":       0.03,
-        "LONG_LINK_DOMAIN":  0.03,
-        "AT_IN_LINK":        0.03,
-        "SUSPICIOUS_WORDS":  0.00,
-    }
-
-    # 阈值（与前端一致）
-    INITIAL_ACCURACY = 0.99
-    AI_REVIEW_LINE = 0.50   # < 50% 触发 AI
-=======
         "LOGIN_FORM":        0.35,
         "SUSPICIOUS_WORDS":  0.35,
         "FREE_HOSTING":      0.35,
@@ -394,7 +347,6 @@ def rule_engine(url: str, page_text: str) -> tuple[bool, float, list[str], str |
     }
 
     INITIAL_ACCURACY = 0.99
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
     reasons: list[str] = []
     matched_brand = None
@@ -403,10 +355,6 @@ def rule_engine(url: str, page_text: str) -> tuple[bool, float, list[str], str |
     is_https = parsed.scheme == "https"
     lower = (page_text or "").lower()
 
-<<<<<<< HEAD
-    # 收集特征 ID 列表
-=======
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     triggered: list[str] = []
 
     # 1. URL 基本检查
@@ -428,45 +376,6 @@ def rule_engine(url: str, page_text: str) -> tuple[bool, float, list[str], str |
         triggered.append("NO_HTTPS")
         reasons.append("未使用 HTTPS")
 
-<<<<<<< HEAD
-    # 2. 品牌相似度
-    for brand_domain, brand_name in BRANDS.items():
-        if domain and domain != brand_domain:
-            r = lev_ratio(domain, brand_domain)
-            if 0.85 <= r < 1.0:
-                triggered.append("BRAND_TYPOSQUAT")
-                reasons.append(f"域名与{brand_name}官方域名高度相似 (相似度{r:.2f})")
-                matched_brand = brand_name
-                break
-
-    # 3. 品牌名出现但域名不符
-    has_form = "form" in lower or "input" in lower or "password" in lower
-    if domain:
-        for brand_domain, brand_name in BRANDS.items():
-            if brand_name.lower() in lower and not (
-                domain == brand_domain or domain.endswith("." + brand_domain)
-            ):
-                if has_form or is_ip_domain:
-                    triggered.append("BRAND_MISMATCH")
-                    reasons.append(f"页面文本提及{brand_name}，但当前域名并非其官方域名")
-                    matched_brand = matched_brand or brand_name
-                    break
-
-    # 4. 密码框无 HTTPS / 信用卡
-    if has_form and not is_https and domain:
-        triggered.append("PASSWORD_NO_HTTPS")
-    if "信用卡" in lower or "银行卡" in lower or "card" in lower:
-        triggered.append("CARD_INPUT")
-
-    # 5. 关键词（INFO 级，不计分但展示）
-    found = [k for k in SUSPICIOUS_KEYWORDS if k.lower() in lower]
-    if found:
-        triggered.append("SUSPICIOUS_WORDS")
-        reasons.append(f"页面文本提及: {', '.join(found[:6])}（仅供参考）")
-
-    # 去重理由
-    reasons = list(dict.fromkeys(reasons))
-=======
     # 1.0b TLD 检测
     if domain and not is_ip_domain:
         parts = domain.split(".")
@@ -609,19 +518,12 @@ def rule_engine(url: str, page_text: str) -> tuple[bool, float, list[str], str |
     # 去重
     reasons = list(dict.fromkeys(reasons))
     triggered = list(dict.fromkeys(triggered))
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
     # 计算扣分
     total_deduction = sum(DEDUCTION_WEIGHTS.get(t, 0) for t in triggered)
     accuracy = max(0.0, INITIAL_ACCURACY - total_deduction)
 
-<<<<<<< HEAD
-    # 本地引擎不判定钓鱼，is_phish 始终为 False（由 AI 判定）
     is_phish = False
-
-=======
-    is_phish = False
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     return is_phish, accuracy, reasons, matched_brand
 
 
@@ -640,11 +542,7 @@ async def call_ai(messages: list[dict], max_tokens: int = 300) -> dict | None:
                 json={
                     "model": MODEL_NAME,
                     "messages": messages,
-<<<<<<< HEAD
-                    "temperature": 0.1,
-=======
                     "temperature": 0.3,
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
                     "max_tokens": max_tokens
                 }
             )
@@ -664,33 +562,6 @@ async def call_ai(messages: list[dict], max_tokens: int = 300) -> dict | None:
         return None
 
 
-<<<<<<< HEAD
-async def ai_text_analysis(url: str, page_text: str) -> tuple[bool, float, list[str]] | None:
-    if not OPENAI_API_KEY:
-        return False, 0.5, ["AI Key未配置，使用规则引擎结果"]
-    system_prompt = (
-        "你是一个专业的网络安全分析师，请根据URL和页面文本判断是否为钓鱼网站。"
-        "核心原则：宁可误报不可漏报。保护用户安全是第一优先级。"
-        "只要有可疑迹象，就应标记为钓鱼，让用户警惕。\n\n"
-        "判定为钓鱼的特征（满足任意1条即可标记）：\n"
-        "- 域名是裸IP地址（如 http://192.168.x.x）\n"
-        "- 域名与知名品牌域名高度相似（如 paypa1.com、g00gle.com）\n"
-        "- 页面提到品牌名但域名不是该品牌官方域名\n"
-        "- 要求输入信用卡号/银行卡号/身份证号/CVV/安全码\n"
-        "- URL中包含@符号（可能用于混淆真实地址）\n"
-        "- 域名使用高风险TLD（.xyz/.tk/.club/.top/.vip 等）\n"
-        "- 页面有紧急诱导词汇（如：您的账户已被锁定、立即验证、恭喜中奖）\n"
-        "- 登录表单提交到外部域名\n"
-        "- 使用HTTP传输密码或敏感信息\n\n"
-        "只有以下情况才可判定为安全：\n"
-        "- 域名是知名官方域名（如 google.com、paypal.com、baidu.com）\n"
-        "- 页面是正常的内容页、博客、新闻，无登录表单和敏感信息输入\n"
-        "- URL看起来完全正常，无任何可疑特征\n\n"
-        "请以JSON返回：{\"is_phishing\": bool, \"accuracy\": float, \"reasons\": [\"理由1\", \"理由2\"]}"
-        "accuracy范围：0.0-1.0，有可疑特征时给高分（>=0.75），非常确定是钓鱼时给极高分（>=0.90）"
-    )
-    user_msg = f"URL: {url}\n页面文本: {page_text[:800]}"
-=======
 async def ai_text_analysis(url: str, page_text: str, local_accuracy: float = 0.0, local_reasons: list[str] = None) -> tuple[bool, float, list[str]] | None:
     if not OPENAI_API_KEY:
         return False, 0.5, ["AI Key未配置，使用规则引擎结果"]
@@ -748,20 +619,12 @@ async def ai_text_analysis(url: str, page_text: str, local_accuracy: float = 0.0
         "\n".join(f"  - {r}" for r in local_reasons) +
         f"\n\n页面文本内容（前800字）:\n{page_text[:800]}"
     )
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     result = await call_ai([
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_msg}
     ], max_tokens=300)
     if not result:
         return None
-<<<<<<< HEAD
-    return (
-        bool(result.get("is_phishing", False)),
-        float(result.get("accuracy", 0.5)),
-        list(result.get("reasons", []))
-    )
-=======
 
     ai_is_phishing = bool(result.get("is_phishing", False))
     ai_accuracy = float(result.get("accuracy", 0.5))
@@ -781,7 +644,6 @@ async def ai_text_analysis(url: str, page_text: str, local_accuracy: float = 0.0
             ai_reasons.append(f"安全机制覆盖：本地准确率 {local_acc_pct}% 低于 50% 安全线")
 
     return ai_is_phishing, ai_accuracy, ai_reasons
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
 
 async def ai_search_official_site(url: str, page_text: str) -> str | None:
@@ -839,12 +701,6 @@ async def check_url(req: CheckRequest):
     ai_official_url = None
     ai_used = False
 
-<<<<<<< HEAD
-    # 准确率 < 50%（AI_REVIEW_LINE）时自动调用 AI 判定
-    needs_ai = rule_acc < 0.50
-    if needs_ai and OPENAI_API_KEY:
-        ai = await ai_text_analysis(req.url, text)
-=======
     # 信任前端传来的 local_accuracy（前端规则引擎更完善）
     # 当前端准确率 < 70%，或后端规则引擎准确率 < 70%，都触发 AI
     # 注意：local_accuracy == 0 且 local_reasons 为空时表示前端未传数据
@@ -882,7 +738,6 @@ async def check_url(req: CheckRequest):
         ai_local_acc = req.local_accuracy if (req.local_accuracy > 0 or req.local_reasons) else rule_acc
         ai_local_reasons = req.local_reasons if req.local_reasons else rule_reasons
         ai = await ai_text_analysis(req.url, text, ai_local_acc, ai_local_reasons)
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
         if ai:
             ai_used = True
             ai_is_phish, ai_acc, ai_reasons = ai

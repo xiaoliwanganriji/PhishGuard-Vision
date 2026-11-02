@@ -7,26 +7,18 @@
 //   - 准确率低于 50% → 自动触发 AI 分析，由 AI 做最终判定
 //   - 准确率低于 45% → 本地直接判定为钓鱼（证据确凿）
 //   - 45%~50% 之间 → 可疑区域，交由 AI 裁决
-<<<<<<< HEAD
-const { BRANDS, BRAND_DOMAINS, SUSPICIOUS_KEYWORDS } = (() => {
-=======
 const { BRANDS, BRAND_DOMAINS, BRAND_NAME_TO_DOMAINS, SUSPICIOUS_KEYWORDS,
         FREE_HOSTING_DOMAINS, SHORT_URL_SERVICES, SENSITIVE_URL_PATHS, SENSITIVE_DOMAIN_KEYWORDS } = (() => {
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     if (typeof require !== "undefined") return require("./brands.js");
     return {
         BRANDS: self.BRANDS || {},
         BRAND_DOMAINS: self.BRAND_DOMAINS || [],
-<<<<<<< HEAD
-        SUSPICIOUS_KEYWORDS: self.SUSPICIOUS_WORDS || []
-=======
         BRAND_NAME_TO_DOMAINS: self.BRAND_NAME_TO_DOMAINS || {},
         SUSPICIOUS_KEYWORDS: self.SUSPICIOUS_WORDS || [],
         FREE_HOSTING_DOMAINS: self.FREE_HOSTING_DOMAINS || [],
         SHORT_URL_SERVICES: self.SHORT_URL_SERVICES || [],
         SENSITIVE_URL_PATHS: self.SENSITIVE_URL_PATHS || [],
         SENSITIVE_DOMAIN_KEYWORDS: self.SENSITIVE_DOMAIN_KEYWORDS || []
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     };
 })();
 
@@ -70,13 +62,6 @@ const DEDUCTION_WEIGHTS = {
     BRAND_MISMATCH:    { weight: 0.50, label: "页面文本提及品牌但当前域名并非其官方域名" },
     PASSWORD_NO_HTTPS: { weight: 0.50, label: "包含密码输入框但页面未使用 HTTPS" },
     CARD_INPUT:        { weight: 0.50, label: "表单要求输入信用卡/银行卡号" },
-<<<<<<< HEAD
-
-    // === 中等特征：钓鱼常见，正常网站较少（需组合触发 AI） ===
-    FORM_EXTERNAL:     { weight: 0.25, label: "表单提交至外部域名" },
-    AT_SYMBOL:         { weight: 0.25, label: "URL 中包含 @ 符号" },
-    HIGH_RISK_TLD:     { weight: 0.25, label: "顶级域名为高风险域名" },
-=======
     LOGIN_FORM:        { weight: 0.35, label: "页面包含登录表单（钓鱼网站核心特征）" },
     SUSPICIOUS_WORDS:  { weight: 0.35, label: "页面文本包含钓鱼/欺诈特有词汇" },
     FREE_HOSTING:      { weight: 0.35, label: "使用免费托管平台（钓鱼网站高频）" },
@@ -90,27 +75,11 @@ const DEDUCTION_WEIGHTS = {
     SENSITIVE_PATH:    { weight: 0.25, label: "URL 路径包含敏感词（login/verify等）" },
     SENSITIVE_DOMAIN:  { weight: 0.30, label: "域名包含敏感词（login/secure等）" },
     SHORT_URL:         { weight: 0.30, label: "使用短链接服务（可能隐藏真实目标）" },
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     LINK_IP:           { weight: 0.18, label: "外链使用 IP 地址" },
     LINK_BRAND_IMPER:  { weight: 0.18, label: "外链域名模仿品牌" },
     META_REDIRECT:     { weight: 0.15, label: "页面存在可疑跳转" },
 
     // === 弱特征：轻微可疑，正常网站也可能有 ===
-<<<<<<< HEAD
-    UNCOMMON_TLD:      { weight: 0.08, label: "顶级域名不常见" },
-    NO_HTTPS:          { weight: 0.08, label: "未使用 HTTPS" },
-    LONG_DOMAIN:       { weight: 0.03, label: "域名长度异常" },
-    LONG_LINK_DOMAIN:  { weight: 0.03, label: "外链域名长度异常" },
-    AT_IN_LINK:        { weight: 0.03, label: "外链包含 @ 符号" },
-
-    // === INFO：信息项，不计分，仅供参考 ===
-    SUSPICIOUS_WORDS:  { weight: 0.00, label: "页面文本包含可疑词汇" }
-};
-
-// 阈值设定
-const INITIAL_ACCURACY = 0.99;   // 默认从 99% 开始
-const AI_REVIEW_LINE   = 0.50;   // AI 线：低于 50% 自动触发 AI 分析
-=======
     UNCOMMON_TLD:      { weight: 0.10, label: "顶级域名不常见" },
     NO_HTTPS:          { weight: 0.08, label: "未使用 HTTPS" },
     LONG_DOMAIN:       { weight: 0.05, label: "域名长度异常" },
@@ -121,17 +90,13 @@ const AI_REVIEW_LINE   = 0.50;   // AI 线：低于 50% 自动触发 AI 分析
 // 阈值设定（宁可误报不漏报：阈值提到 70%，扣分超过 30% 就触发 AI）
 const INITIAL_ACCURACY = 0.99;   // 默认从 99% 开始
 const AI_REVIEW_LINE   = 0.70;   // AI 线：低于 70% 自动触发 AI 分析
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
 // =============================================================================
 // 特征检测
 // =============================================================================
 function detectReasons({ url, pageText, links, forms, html }) {
     const reasons = [];
-<<<<<<< HEAD
-=======
     let matchedBrand = null;
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     const domain = extractDomain(url);
     const isHttps = url.startsWith("https://");
     const isLocal = isLocalDomain(domain);
@@ -159,10 +124,6 @@ function detectReasons({ url, pageText, links, forms, html }) {
         }
     }
 
-<<<<<<< HEAD
-    // 2. 域名仿冒
-    let matchedBrand = null;
-=======
     // 1.5 多级子域名检测（钓鱼常见手法：account-update.security-verify.xxx）
     if (!isLocal && !isIPAddress(domain)) {
         const parts = domain.split(".");
@@ -242,7 +203,6 @@ function detectReasons({ url, pageText, links, forms, html }) {
     }
 
     // 2. 域名仿冒
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     if (!isLocal) {
         for (const [brandDomain, brandName] of BRAND_DOMAINS) {
             const ratio = levenshteinRatio(domain, brandDomain);
@@ -292,21 +252,15 @@ function detectReasons({ url, pageText, links, forms, html }) {
 
     // 4. 表单分析
     let hasAnyForm = false;
-<<<<<<< HEAD
-=======
     let hasLoginForm = false;
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     (forms || []).forEach(form => {
         const formAction = form.action || "";
         const hasPassword = form.inputs.some(i => i.type === "password");
         const hasCard = form.inputs.some(i =>
             /card|信用卡|银行卡/.test((i.name || "") + (i.placeholder || "")));
-<<<<<<< HEAD
-=======
         // 登录表单判定：有密码框 或 同时有用户名+提交按钮特征
         const hasUserField = form.inputs.some(i =>
             /user|email|account|账号|账户|用户名|手机/.test((i.name || "") + (i.placeholder || "")));
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
         hasAnyForm = true;
 
@@ -320,9 +274,6 @@ function detectReasons({ url, pageText, links, forms, html }) {
             reasons.push({ id: "PASSWORD_NO_HTTPS" });
         }
         if (hasCard) reasons.push({ id: "CARD_INPUT" });
-<<<<<<< HEAD
-    });
-=======
         // 登录表单：有密码框 或 有用户名字段（钓鱼网站核心特征）
         if (hasPassword || (hasUserField && form.inputs.length >= 2)) {
             hasLoginForm = true;
@@ -332,7 +283,6 @@ function detectReasons({ url, pageText, links, forms, html }) {
     if (hasLoginForm && !isLocal) {
         reasons.push({ id: "LOGIN_FORM" });
     }
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
 
     // 5. 重定向（仅当跳转至外部域名时才标记）
     const metaMatch = (html || "").match(/<meta[^>]+http-equiv\s*=\s*["']refresh["'][^>]*content\s*=\s*["']\d*\s*;?\s*url\s*=\s*(\S+?)["'][^>]*>/i);
@@ -344,24 +294,12 @@ function detectReasons({ url, pageText, links, forms, html }) {
         }
     }
 
-<<<<<<< HEAD
-    // 6. 关键词（仅作为信息展示，不计入评分）
-=======
     // 6. 关键词（钓鱼/欺诈特有词汇，现在计入扣分）
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
     const foundKeywords = SUSPICIOUS_KEYWORDS.filter(kw => lowerText.includes(kw.toLowerCase()));
     if (foundKeywords.length > 0) {
         reasons.push({ id: "SUSPICIOUS_WORDS", meta: { keywords: foundKeywords } });
     }
 
-<<<<<<< HEAD
-    // 7. 品牌词域名不符（需结合表单或其他信号才有效）
-    if (!isLocal) {
-        for (const [brandDomain, brandName] of BRAND_DOMAINS) {
-            if (lowerText.includes(brandName.toLowerCase()) &&
-                !isOfficialDomain(domain, brandDomain)) {
-                if (hasAnyForm || isIPAddress(domain) || (tld && !isCommonTld(tld))) {
-=======
     // 7. 品牌词域名不符（需有表单或IP域名才触发，避免新闻博客误报）
     //    修复：同一品牌可能有多个官方域名（如 Microsoft 有 microsoft.com 和 live.com）
     if (!isLocal && (hasLoginForm || isIPAddress(domain))) {
@@ -374,7 +312,6 @@ function detectReasons({ url, pageText, links, forms, html }) {
                 const allBrandDomains = BRAND_NAME_TO_DOMAINS[brandName] || [brandDomain];
                 const isOfficial = allBrandDomains.some(bd => isOfficialDomain(domain, bd));
                 if (!isOfficial) {
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
                     reasons.push({ id: "BRAND_MISMATCH", meta: { brandName, brandDomain } });
                     if (!matchedBrand) matchedBrand = brandName;
                 }
@@ -402,9 +339,6 @@ function renderReasonText(r) {
         case "FORM_EXTERNAL":     return `表单提交至外部域名：${m.actionDomain} ${badge}`;
         case "PASSWORD_NO_HTTPS": return `包含密码输入框但页面未使用 HTTPS ${badge}`;
         case "CARD_INPUT":        return `表单要求输入信用卡/银行卡号 ${badge}`;
-<<<<<<< HEAD
-        case "BRAND_MISMATCH":    return `页面文本提及"${m.brandName}"，但当前域名并非其官方域名（${m.brandDomain}）${badge}`;
-=======
         case "LOGIN_FORM":        return `页面包含登录表单（钓鱼网站核心特征）${badge}`;
         case "BRAND_MISMATCH":    return `页面文本提及"${m.brandName}"，但当前域名并非其官方域名（${m.brandDomain}）${badge}`;
         case "FREE_HOSTING":      return `使用免费托管平台 ${m.platform}（钓鱼网站高频使用）${badge}`;
@@ -412,20 +346,14 @@ function renderReasonText(r) {
         case "SENSITIVE_PATH":    return `URL 路径包含敏感词 "${m.path}" ${badge}`;
         case "SENSITIVE_DOMAIN":  return `域名包含敏感词 "${m.keyword}"（子域名：${m.subdomain}）${badge}`;
         case "SHORT_URL":        return `使用短链接服务 ${m.service}（可能隐藏真实目标）${badge}`;
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
         case "AT_SYMBOL":         return `URL 中包含 @ 符号，可能用于混淆 ${badge}`;
         case "LINK_IP":           return `外链使用 IP 地址：${m.linkDomain} ${badge}`;
         case "LINK_BRAND_IMPER":  return `外链域名模仿 ${m.brandName}：${m.linkDomain} ${badge}`;
         case "META_REDIRECT":     return `页面存在跳转至外部域名：${m.target} ${badge}`;
         case "HIGH_RISK_TLD":     return `顶级域名 .${m.tld} 为高风险域名（钓鱼网站高发）${badge}`;
-<<<<<<< HEAD
-        case "UNCOMMON_TLD":      return `顶级域名 .${m.tld} 不常见 ${badge}`;
-        case "SUSPICIOUS_WORDS":  return `页面文本提及：${(m.keywords || []).join("、")}（仅供参考，不影响准确率）`;
-=======
         case "MULTI_SUBDOMAIN":   return `多级子域名堆砌（${m.count} 级非标子域，仿冒常见手法）${badge}`;
         case "UNCOMMON_TLD":      return `顶级域名 .${m.tld} 不常见 ${badge}`;
         case "SUSPICIOUS_WORDS":  return `页面文本包含钓鱼/欺诈特有词汇：${(m.keywords || []).join("、")} ${badge}`;
->>>>>>> 3e8931f (v1.2.0: 三层防御体系 + 短链接检测 + PhishTank 65.5% Recall)
         case "NO_HTTPS":          return `未使用 HTTPS ${badge}`;
         case "LONG_DOMAIN":       return `域名长度异常：${m.domain} ${badge}`;
         case "LONG_LINK_DOMAIN":  return `外链域名长度异常：${m.linkDomain} ${badge}`;
